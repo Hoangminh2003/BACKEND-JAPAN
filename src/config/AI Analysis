@@ -1,0 +1,46 @@
+// src/services/aiAnalysis.js
+
+const analyzeResult = (questions, userAnswers) => {
+  let score = 0;
+  let total = questions.length;
+
+  let details = [];
+  let stats = {
+    vocabulary: { correct: 0, total: 0 },
+    grammar: { correct: 0, total: 0 },
+    reading: { correct: 0, total: 0 },
+    listening: { correct: 0, total: 0 }
+  };
+
+  questions.forEach((q, index) => {
+    const userAnswer = userAnswers[index];
+    const isCorrect = userAnswer === q.correctAnswer;
+
+    if (isCorrect) score++;
+
+    // thống kê theo loại câu hỏi
+    if (stats[q.type]) {
+      stats[q.type].total++;
+      if (isCorrect) stats[q.type].correct++;
+    }
+
+    details.push({
+      questionId: q._id,
+      correctAnswer: q.correctAnswer,
+      userAnswer,
+      isCorrect,
+      explanation: generateExplanation(q, isCorrect)
+    });
+  });
+
+  const weaknesses = detectWeakness(stats);
+
+  return {
+    score,
+    total,
+    percentage: ((score / total) * 100).toFixed(2),
+    stats,
+    weaknesses,
+    details
+  };
+};
