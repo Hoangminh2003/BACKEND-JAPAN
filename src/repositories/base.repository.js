@@ -74,5 +74,15 @@ export default class BaseRepository {
         return this.model.aggregate(pipeline);
     }
 
+    async paginate(filter, { page = 1, limit = 20, sort, select, populate, lean = true }) {
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.find(filter, { sort, select, populate, skip, limit: parseInt(limit), lean }),
+            this.count(filter),
+        ]);
+        return { data, total, page: parseInt(page), limit: parseInt(limit) };
+    }
+
+
 
 }
