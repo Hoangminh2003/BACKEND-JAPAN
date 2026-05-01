@@ -66,5 +66,9 @@ export default class BaseRepository {
         return this.model.deleteMany(filter, options.session ? { session: options.session } : {});
     }
 
+    async count(filter = {}) {
+        return this.model.countDocuments(filter);
+    }
+
 
 }
