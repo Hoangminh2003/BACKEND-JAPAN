@@ -35,4 +35,13 @@ export default class BaseRepository {
         return query;
     }
 
+    async create(data, options = {}) {
+        if (options.session) {
+            const [doc] = await this.model.create([data], { session: options.session });
+            return doc;
+        }
+        return this.model.create(data);
+    }
+
+
 }
