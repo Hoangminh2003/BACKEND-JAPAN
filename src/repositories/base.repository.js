@@ -62,5 +62,9 @@ export default class BaseRepository {
         return doc;
     }
 
+    async deleteMany(filter, options = {}) {
+        return this.model.deleteMany(filter, options.session ? { session: options.session } : {});
+    }
+
 
 }
