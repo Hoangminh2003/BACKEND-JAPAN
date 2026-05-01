@@ -47,5 +47,13 @@ export default class BaseRepository {
         return this.model.insertMany(data, options);
     }
 
+    async updateById(id, data, options = {}) {
+        return this.model.findByIdAndUpdate(id, data, {
+            new: true,
+            runValidators: true,
+            ...options,
+        });
+    }
+
 
 }
