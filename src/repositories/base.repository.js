@@ -43,5 +43,9 @@ export default class BaseRepository {
         return this.model.create(data);
     }
 
+    async insertMany(data, options = {}) {
+        return this.model.insertMany(data, options);
+    }
+
 
 }
