@@ -70,5 +70,9 @@ export default class BaseRepository {
         return this.model.countDocuments(filter);
     }
 
+    async aggregate(pipeline) {
+        return this.model.aggregate(pipeline);
+    }
+
 
 }
