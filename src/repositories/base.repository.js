@@ -15,4 +15,12 @@ export default class BaseRepository {
         return query;
     }
 
+    async findOne(filter, options = {}) {
+        const query = this.model.findOne(filter);
+        if (options.select) query.select(options.select);
+        if (options.populate) query.populate(options.populate);
+        if (options.lean) query.lean();
+        return query;
+    }
+
 }
