@@ -55,5 +55,12 @@ export default class BaseRepository {
         });
     }
 
+    async deleteById(id, options = {}) {
+        const doc = await this.model.findById(id);
+        if (!doc) return null;
+        await doc.deleteOne(options.session ? { session: options.session } : {});
+        return doc;
+    }
+
 
 }
