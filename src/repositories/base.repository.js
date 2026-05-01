@@ -23,4 +23,16 @@ export default class BaseRepository {
         return query;
     }
 
+    async find(filter = {}, options = {}) {
+        const query = this.model.find(filter);
+        if (options.select) query.select(options.select);
+        if (options.populate) query.populate(options.populate);
+        if (options.sort) query.sort(options.sort);
+        if (options.skip) query.skip(options.skip);
+        if (options.limit) query.limit(options.limit);
+        if (options.lean) query.lean();
+        if (options.session) query.session(options.session);
+        return query;
+    }
+
 }
