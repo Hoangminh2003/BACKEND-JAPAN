@@ -28,3 +28,18 @@ export const aiExplainQuestion = asyncHandler(async (req, res) => {
         sectionType,
         context,
     });
+if (questionId) {
+        try {
+            const bankQuestion = await questionRepository.findById(questionId);
+            if (bankQuestion && !bankQuestion.explanation) {
+                bankQuestion.explanation = result.explanation;
+                bankQuestion.translationVi = result.translationVi;
+                await bankQuestion.save();
+            }
+        } catch {
+            // Non-critical, không ảnh hưởng flow
+        }
+    }
+
+    ApiResponse.success(res, result, "AI explanation generated successfully");
+});
