@@ -43,3 +43,12 @@ if (questionId) {
 
     ApiResponse.success(res, result, "AI explanation generated successfully");
 });
+export const aiExplainExamQuestion = asyncHandler(async (req, res) => {
+    const { examId, questionId } = req.body;
+
+    if (!examId || !questionId) {
+        throw new BadRequestError("examId and questionId are required");
+    }
+
+    const exam = await examRepository.findById(examId);
+    if (!exam) throw new NotFoundError("Exam");
