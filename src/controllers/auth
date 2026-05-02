@@ -14,3 +14,7 @@ export const getMe = asyncHandler(async (req, res) => {
     const result = await authService.getProfile(req.user.id);
     ApiResponse.success(res, result, "User profile fetched");
 });
+export const updateProfile = asyncHandler(async (req, res) => {
+    const result = await authService.updateProfile(req.user.id, req.body);
+    ApiResponse.success(res, result, "Profile updated successfully");
+});
