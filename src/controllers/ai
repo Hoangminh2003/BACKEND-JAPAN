@@ -52,3 +52,29 @@ export const aiExplainExamQuestion = asyncHandler(async (req, res) => {
 
     const exam = await examRepository.findById(examId);
     if (!exam) throw new NotFoundError("Exam");
+const exam = await examRepository.findById(examId);
+    if (!exam) throw new NotFoundError("Exam");
+
+    // Tìm câu hỏi embedded trong exam
+    let targetQuestion = null;
+    let targetSection = null;
+    let targetBlock = null;
+
+    for (const section of exam.sections) {
+        for (const block of section.blocks) {
+            for (const question of block.questions) {
+                if (question._id.toString() === questionId) {
+                    targetQuestion = question;
+                    targetSection = section;
+                    targetBlock = block;
+                    break;
+                }
+            }
+            if (targetQuestion) break;
+        }
+        if (targetQuestion) break;
+    }
+
+    if (!targetQuestion) {
+        throw new NotFoundError("Question not found in exam");
+    }
