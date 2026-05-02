@@ -6,3 +6,7 @@ export const register = asyncHandler(async (req, res) => {
     const result = await authService.register(req.body);
     ApiResponse.created(res, result, "Registration successful");
 });
+export const login = asyncHandler(async (req, res) => {
+    const result = await authService.login(req.body);
+    ApiResponse.success(res, result, "Login successful");
+});
