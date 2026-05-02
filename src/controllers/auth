@@ -10,3 +10,7 @@ export const login = asyncHandler(async (req, res) => {
     const result = await authService.login(req.body);
     ApiResponse.success(res, result, "Login successful");
 });
+export const getMe = asyncHandler(async (req, res) => {
+    const result = await authService.getProfile(req.user.id);
+    ApiResponse.success(res, result, "User profile fetched");
+});
