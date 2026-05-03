@@ -70,6 +70,55 @@ class ExamAttemptRepository extends BaseRepository {
         );
     }
 
+    /**
+     * Streak – số ngày liên tiếp có bài submitted (tính từ hôm nay lùi ngược).
+     */
+    async getStreak(userId) {
+        const days = await this.aggregate([
+            { $match: { user: userId, status: "submitted" } },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$startTime" },
+                    },
+                },
+            },
+            { $sort: { _id: -1 } },
+        ]);
+
+        if (!days.length) return 0;
+
+        let streak = 0;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let i = 0; i < days.length; i++) {
+            const d = new Date(days[i]._id);
+            d.setHours(0, 0, 0, 0);
+            const expected = new Date(today);
+            expected.setDate(expected.getDate() - i);
+            expected.setHours(0, 0, 0, 0);
+
+            if (d.getTime() === expected.getTime()) {
+                streak++;
+            } else if (i === 0 && streak === 0) {
+                // If no exam today, shift by 1 day
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (d.getTime() === yesterday.getTime()) {
+                    streak = 1;
+                    today.setDate(today.getDate() - 1); // shift base
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return streak;
+    }
+
+
 
 }
 
