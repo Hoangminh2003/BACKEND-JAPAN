@@ -401,6 +401,41 @@ class ExamAttemptRepository extends BaseRepository {
         };
     }
 
+    
+    /**
+     * Thống kê số lượt thi theo tuần hoặc tháng.
+     * @param {'week'|'month'} period
+     * @param {number} count - số tuần/tháng gần nhất
+     * @param {Array<import('mongoose').Types.ObjectId>} [examIds] - lọc theo đề thi của creator
+     */
+    async getAttemptsByPeriod(period = "week", count = 12, examIds = null) {
+        const now = new Date();
+        const since = new Date(now);
+
+        if (period === "week") {
+            since.setDate(since.getDate() - count * 7);
+        } else {
+            since.setMonth(since.getMonth() - count);
+        }
+        since.setHours(0, 0, 0, 0);
+
+        const match = { status: "submitted", startTime: { $gte: since } };
+        if (examIds) match.exam = { $in: examIds };
+
+        const dateFormat = period === "week" ? "%Y-W%V" : "%Y-%m";
+
+        return this.aggregate([
+            { $match: match },
+            {
+                $group: {
+                    _id: { $dateToString: { format: dateFormat, date: "$startTime" } },
+                    count: { $sum: 1 },
+                },
+            },
+            { $sort: { _id: 1 } },
+        ]);
+    }
+
 
 
 
