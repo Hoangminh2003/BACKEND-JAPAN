@@ -25,9 +25,17 @@ class BookmarkRepository extends BaseRepository {
             sort: { createdAt: -1 },
         });
     }
+
     async isBookmarked(userId, questionId) {
         const doc = await this.findOne({ user: userId, questionId });
         return !!doc;
     }
 
+    async getBookmarkedIds(userId, questionIds) {
+        const docs = await this.find({ user: userId, questionId: { $in: questionIds } }, { select: "questionId", lean: true });
+        return new Set(docs.map((d) => d.questionId.toString()));
+    }
 }
+
+export default new BookmarkRepository();
+
