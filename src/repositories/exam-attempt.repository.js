@@ -140,6 +140,42 @@ class ExamAttemptRepository extends BaseRepository {
         ]);
     }
 
+    /**
+     * Điểm trung bình theo kỹ năng (radar chart).
+     */
+    async getScoresBySection(userId) {
+        return this.aggregate([
+            { $match: { user: userId, status: "submitted" } },
+            { $unwind: "$results.sectionScores" },
+            {
+                $group: {
+                    _id: "$results.sectionScores.sectionType",
+                    avgScore: {
+                        $avg: {
+                            $cond: [
+                                { $gt: ["$results.sectionScores.totalQuestions", 0] },
+                                {
+                                    $multiply: [
+                                        {
+                                            $divide: [
+                                                "$results.sectionScores.correctAnswers",
+                                                "$results.sectionScores.totalQuestions",
+                                            ],
+                                        },
+                                        100,
+                                    ],
+                                },
+                                0,
+                            ],
+                        },
+                    },
+                    totalAttempts: { $sum: 1 },
+                },
+            },
+            { $sort: { _id: 1 } },
+        ]);
+    }
+
 
 
 
