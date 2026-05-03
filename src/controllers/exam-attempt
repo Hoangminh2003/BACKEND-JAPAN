@@ -57,3 +57,11 @@ export const getMyAttempts = asyncHandler(async (req, res) => {
     );
     ApiResponse.paginate(res, data, page, limit, total, "Attempts retrieved successfully");
 });
+export const getAttemptById = asyncHandler(async (req, res) => {
+    const attempt = await examAttemptService.getAttemptById(
+        req.body.attemptId,
+        req.user.id,
+        req.user.role,
+    );
+    ApiResponse.success(res, { attempt });
+});
