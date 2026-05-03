@@ -53,3 +53,11 @@ export const getMyBookmarks = asyncHandler(async (req, res) => {
             examLevel: exam.level,
         };
     });
+    ApiResponse.paginate(res, enriched, p, l, total, "Bookmarks retrieved");
+});
+
+export const checkBookmarks = asyncHandler(async (req, res) => {
+    const { questionIds } = req.body;
+    const bookmarkedSet = await bookmarkRepository.getBookmarkedIds(req.user.id, questionIds || []);
+    ApiResponse.success(res, { bookmarkedIds: [...bookmarkedSet] });
+});
