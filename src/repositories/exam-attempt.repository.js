@@ -39,6 +39,22 @@ class ExamAttemptRepository extends BaseRepository {
         });
     }
 
+    async getUserAttempts({ userId, page = 1, limit = 20, examId, status, search, examIds }) {
+        const filter = { user: userId };
+
+        if (examId) filter.exam = examId;
+        if (status) filter.status = status;
+        if (examIds) filter.exam = { $in: examIds };
+
+        return this.paginate(filter, {
+            page,
+            limit,
+            sort: { startTime: -1 },
+            select: "-answers",
+            populate: { path: "exam", select: "title examCode level totalPoints duration" },
+        });
+    }
+
 }
 
 export default new ExamAttemptRepository();
