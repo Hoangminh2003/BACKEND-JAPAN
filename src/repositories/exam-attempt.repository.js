@@ -206,6 +206,36 @@ class ExamAttemptRepository extends BaseRepository {
         ]);
     }
 
+    
+    /**
+     * Lấy 2 lần làm bài gần nhất cho cùng 1 exam (so sánh).
+     */
+    async getRecentPairForComparison(userId) {
+        // Find latest submitted attempt
+        const latest = await this.findOne(
+            { user: userId, status: "submitted" },
+            {
+                sort: { startTime: -1 },
+                select: "exam",
+                lean: true,
+            },
+        );
+        if (!latest) return [];
+
+        // Find 2 most recent attempts for the same exam
+        return this.find(
+            { user: userId, exam: latest.exam, status: "submitted" },
+            {
+                sort: { startTime: -1 },
+                limit: 2,
+                populate: { path: "exam", select: "title examCode level totalPoints" },
+                select: "exam results startTime duration mode",
+                lean: true,
+            },
+        );
+    }
+
+
 
 
 
