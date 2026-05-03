@@ -263,6 +263,76 @@ class ExamAttemptRepository extends BaseRepository {
         ]);
     }
 
+    /**
+     * Leaderboard – top users by avg percentage.
+     */
+    async getLeaderboard({ period, level, limit = 20 }) {
+        const match = { status: "submitted" };
+        if (period) {
+            const since = new Date();
+            if (period === "week") since.setDate(since.getDate() - 7);
+            else if (period === "month") since.setMonth(since.getMonth() - 1);
+            match.startTime = { $gte: since };
+        }
+
+        const pipeline = [{ $match: match }];
+
+        if (level) {
+            pipeline.push(
+                {
+                    $lookup: {
+                        from: "exams",
+                        localField: "exam",
+                        foreignField: "_id",
+                        as: "examData",
+                    },
+                },
+                { $unwind: "$examData" },
+                { $match: { "examData.level": level } },
+            );
+        }
+
+        pipeline.push(
+            {
+                $group: {
+                    _id: "$user",
+                    avgPercentage: { $avg: "$results.percentage" },
+                    totalScore: { $sum: "$results.totalScore" },
+                    totalAttempts: { $sum: 1 },
+                    totalPassed: { $sum: { $cond: ["$results.passed", 1, 0] } },
+                    bestPercentage: { $max: "$results.percentage" },
+                },
+            },
+            { $sort: { avgPercentage: -1, totalScore: -1 } },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    _id: 1,
+                    avgPercentage: { $round: ["$avgPercentage", 1] },
+                    totalScore: 1,
+                    totalAttempts: 1,
+                    totalPassed: 1,
+                    bestPercentage: 1,
+                    "user.fullName": 1,
+                    "user.avatar": 1,
+                    "user.email": 1,
+                },
+            },
+        );
+
+        return this.aggregate(pipeline);
+    }
+
+
 
 
 
