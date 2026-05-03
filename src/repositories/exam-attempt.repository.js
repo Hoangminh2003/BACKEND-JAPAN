@@ -26,6 +26,12 @@ class ExamAttemptRepository extends BaseRepository {
             },
         );
     }
+
+    async getWithUser(attemptId) {
+        return this.findById(attemptId, {
+            populate: { path: "user", select: "fullName email" },
+        });
+    }
 }
 
 export default new ExamAttemptRepository();
