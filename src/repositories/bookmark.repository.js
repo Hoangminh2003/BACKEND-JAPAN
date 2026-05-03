@@ -25,5 +25,9 @@ class BookmarkRepository extends BaseRepository {
             sort: { createdAt: -1 },
         });
     }
+    async isBookmarked(userId, questionId) {
+        const doc = await this.findOne({ user: userId, questionId });
+        return !!doc;
+    }
 
 }
