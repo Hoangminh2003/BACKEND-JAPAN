@@ -9,3 +9,26 @@ export const startExam = asyncHandler(async (req, res) => {
     const message = result.resumed ? "Resuming exam in progress" : "Exam started successfully";
     ApiResponse.success(res, result, message, statusCode);
 });
+export const submitExam = asyncHandler(async (req, res) => {
+    const { attemptId, answers, examId } = req.body;
+    const userId = req.user?.id || null;
+
+    let result;
+    if (!userId || !attemptId) {
+        // Guest mode → evaluate in-memory (no DB persistence)
+        const sectionTypes = null; // full exam
+        result = await examAttemptService.evaluatePractice(
+            examId || attemptId,
+            sectionTypes,
+            answers,
+        );
+        return ApiResponse.success(res, { guestResult: result }, "Exam evaluated successfully");
+    }
+
+    result = await examAttemptService.submitExam(attemptId, answers, userId);
+    const message = result.timedOut
+        ? "Exam auto-submitted (time expired)"
+        : "Exam submitted successfully";
+    ApiResponse.success(res, result, message);
+});
+
