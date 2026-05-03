@@ -118,6 +118,29 @@ class ExamAttemptRepository extends BaseRepository {
         return streak;
     }
 
+    /**
+     * Điểm theo ngày (scores by day) – last N days.
+     */
+    async getScoresByDay(userId, days = 30) {
+        const since = new Date();
+        since.setDate(since.getDate() - days);
+        since.setHours(0, 0, 0, 0);
+
+        return this.aggregate([
+            { $match: { user: userId, status: "submitted", startTime: { $gte: since } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$startTime" } },
+                    avgPercentage: { $avg: "$results.percentage" },
+                    bestPercentage: { $max: "$results.percentage" },
+                    count: { $sum: 1 },
+                },
+            },
+            { $sort: { _id: 1 } },
+        ]);
+    }
+
+
 
 
 }
