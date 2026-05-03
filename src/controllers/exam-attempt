@@ -32,3 +32,8 @@ export const submitExam = asyncHandler(async (req, res) => {
     ApiResponse.success(res, result, message);
 });
 
+export const evaluatePractice = asyncHandler(async (req, res) => {
+    const { examId, sectionTypes, answers } = req.body;
+    const result = await examAttemptService.evaluatePractice(examId, sectionTypes, answers);
+    ApiResponse.success(res, result);
+});
