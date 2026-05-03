@@ -42,3 +42,11 @@ export const getExamInfo = asyncHandler(async (req, res) => {
     const exam = await examAttemptService.getExamInfo(req.body.examId, userRole);
     ApiResponse.success(res, { exam });
 });
+    const userId = req.user?.id || null;
+    const userRole = req.user?.role || "user";
+    if (!userId) {
+        return ApiResponse.error(res, "Authentication required to view saved results", 401);
+    }
+    const result = await examAttemptService.getAttemptResult(req.body.attemptId, userId, userRole);
+    ApiResponse.success(res, result);
+});
