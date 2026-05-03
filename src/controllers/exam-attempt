@@ -37,3 +37,8 @@ export const evaluatePractice = asyncHandler(async (req, res) => {
     const result = await examAttemptService.evaluatePractice(examId, sectionTypes, answers);
     ApiResponse.success(res, result);
 });
+export const getExamInfo = asyncHandler(async (req, res) => {
+    const userRole = req.user?.role || "user";
+    const exam = await examAttemptService.getExamInfo(req.body.examId, userRole);
+    ApiResponse.success(res, { exam });
+});
