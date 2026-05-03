@@ -176,6 +176,37 @@ class ExamAttemptRepository extends BaseRepository {
         ]);
     }
 
+    
+    /**
+     * Tỷ lệ đúng sai theo cấp độ (bar chart data).
+     */
+    async getAccuracyByLevel(userId) {
+        return this.aggregate([
+            { $match: { user: userId, status: "submitted" } },
+            {
+                $lookup: {
+                    from: "exams",
+                    localField: "exam",
+                    foreignField: "_id",
+                    as: "examData",
+                },
+            },
+            { $unwind: "$examData" },
+            {
+                $group: {
+                    _id: "$examData.level",
+                    totalCorrect: { $sum: "$results.correctAnswers" },
+                    totalWrong: { $sum: "$results.wrongAnswers" },
+                    totalSkipped: { $sum: "$results.skippedAnswers" },
+                    avgPercentage: { $avg: "$results.percentage" },
+                    attempts: { $sum: 1 },
+                },
+            },
+            { $sort: { _id: 1 } },
+        ]);
+    }
+
+
 
 
 
