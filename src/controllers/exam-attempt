@@ -50,3 +50,10 @@ export const getExamInfo = asyncHandler(async (req, res) => {
     const result = await examAttemptService.getAttemptResult(req.body.attemptId, userId, userRole);
     ApiResponse.success(res, result);
 });
+export const getMyAttempts = asyncHandler(async (req, res) => {
+    const { data, total, page, limit } = await examAttemptService.getMyAttempts(
+        req.user.id,
+        req.body,
+    );
+    ApiResponse.paginate(res, data, page, limit, total, "Attempts retrieved successfully");
+});
