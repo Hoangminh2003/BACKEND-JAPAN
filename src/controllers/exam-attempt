@@ -1,0 +1,11 @@
+import { examAttemptService } from "../services/index.js";
+import ApiResponse from "../utils/api-response.js";
+import { asyncHandler } from "../utils/async-handler.js";
+
+export const startExam = asyncHandler(async (req, res) => {
+    const userId = req.user?.id || null;
+    const result = await examAttemptService.startExam(req.body, userId);
+    const statusCode = result.resumed ? 200 : 201;
+    const message = result.resumed ? "Resuming exam in progress" : "Exam started successfully";
+    ApiResponse.success(res, result, message, statusCode);
+});
