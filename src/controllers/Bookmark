@@ -1,0 +1,10 @@
+import bookmarkRepository from "../repositories/bookmark.repository.js";
+import { examRepository } from "../repositories/index.js";
+import ApiResponse from "../utils/api-response.js";
+import { asyncHandler } from "../utils/async-handler.js";
+
+export const toggleBookmark = asyncHandler(async (req, res) => {
+  const { examId, questionId, sectionType } = req.body;
+  const result = await bookmarkRepository.toggle(req.user.id, examId, questionId, sectionType);
+  ApiResponse.success(res, result, result.bookmarked ? "Bookmarked" : "Bookmark removed");
+});
