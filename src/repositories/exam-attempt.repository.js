@@ -235,6 +235,34 @@ class ExamAttemptRepository extends BaseRepository {
         );
     }
 
+    
+    /**
+     * Lấy tất cả câu sai từ các attempt gần đây.
+     */
+    async getWrongQuestions(userId, limitAttempts = 10) {
+        return this.aggregate([
+            { $match: { user: userId, status: "submitted" } },
+            { $sort: { startTime: -1 } },
+            { $limit: limitAttempts },
+            { $unwind: "$answers" },
+            { $match: { "answers.isCorrect": false, "answers.selectedAnswer": { $ne: null } } },
+            {
+                $group: {
+                    _id: {
+                        examId: "$exam",
+                        questionId: "$answers.questionId",
+                    },
+                    sectionType: { $first: "$answers.sectionType" },
+                    selectedAnswer: { $last: "$answers.selectedAnswer" },
+                    attemptId: { $last: "$_id" },
+                    wrongCount: { $sum: 1 },
+                    lastWrongAt: { $max: "$startTime" },
+                },
+            },
+            { $sort: { lastWrongAt: -1 } },
+        ]);
+    }
+
 
 
 
