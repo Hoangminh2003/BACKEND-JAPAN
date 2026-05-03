@@ -55,6 +55,22 @@ class ExamAttemptRepository extends BaseRepository {
         });
     }
 
+    async getRecentSubmitted(limitCount = 10) {
+        return this.find(
+            { status: "submitted" },
+            {
+                populate: [
+                    { path: "user", select: "fullName email" },
+                    { path: "exam", select: "title examCode level" },
+                ],
+                select: "user exam results.totalScore results.passed startTime",
+                sort: { startTime: -1 },
+                limit: limitCount,
+            },
+        );
+    }
+
+
 }
 
 export default new ExamAttemptRepository();
