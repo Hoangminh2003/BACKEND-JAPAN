@@ -14,6 +14,18 @@ class ExamAttemptRepository extends BaseRepository {
             mode,
         });
     }
+
+    async findAllInProgress(userId) {
+        return this.find(
+            { user: userId, status: "in_progress" },
+            {
+                populate: { path: "exam", select: "title examCode level duration" },
+                select: "exam mode startTime allowedDuration",
+                sort: { startTime: -1 },
+                limit: 5,
+            },
+        );
+    }
 }
 
 export default new ExamAttemptRepository();
