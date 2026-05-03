@@ -32,6 +32,13 @@ class ExamAttemptRepository extends BaseRepository {
             populate: { path: "user", select: "fullName email" },
         });
     }
+
+    async getWithExamAndUser(attemptId) {
+        return this.findById(attemptId, {
+            populate: [{ path: "exam" }, { path: "user", select: "fullName email" }],
+        });
+    }
+
 }
 
 export default new ExamAttemptRepository();
