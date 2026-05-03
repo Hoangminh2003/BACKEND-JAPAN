@@ -16,4 +16,14 @@ class BookmarkRepository extends BaseRepository {
         return { bookmarked: true };
     }
 
+    async getUserBookmarks(userId, { page = 1, limit = 20, sectionType }) {
+        const filter = { user: userId };
+        if (sectionType) filter.sectionType = sectionType;
+        return this.paginate(filter, {
+            page,
+            limit,
+            sort: { createdAt: -1 },
+        });
+    }
+
 }
