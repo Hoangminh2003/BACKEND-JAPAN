@@ -22,3 +22,8 @@ export const getExamById = asyncHandler(async (req, res) => {
     const exam = await examService.getExamById(req.body.examId, req.user);
     ApiResponse.success(res, { exam });
 });
+export const updateExam = asyncHandler(async (req, res) => {
+    const { examId, ...updateData } = req.body;
+    const exam = await examService.updateExam(examId, updateData, req.user);
+    ApiResponse.success(res, { exam }, "Exam updated successfully");
+});
