@@ -10,3 +10,18 @@ export const create = asyncHandler(async (req, res) => {
     const feedback = await examFeedbackService.create(req.body, userId);
     ApiResponse.created(res, { feedback }, "Feedback created");
 });
+export const list = asyncHandler(async (req, res) => {
+    const { examId, type, page, limit } = req.body;
+    const {
+        data,
+        total,
+        page: p,
+        limit: l,
+    } = await examFeedbackService.list({
+        examId,
+        type,
+        page,
+        limit,
+    });
+    ApiResponse.paginate(res, data, p, l, total, "Feedbacks retrieved");
+});
