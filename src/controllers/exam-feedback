@@ -25,3 +25,17 @@ export const list = asyncHandler(async (req, res) => {
     });
     ApiResponse.paginate(res, data, p, l, total, "Feedbacks retrieved");
 });
+export const listReplies = asyncHandler(async (req, res) => {
+    const { parentId, page, limit } = req.body;
+    const {
+        data,
+        total,
+        page: p,
+        limit: l,
+    } = await examFeedbackService.listReplies({
+        parentId,
+        page,
+        limit,
+    });
+    ApiResponse.paginate(res, data, p, l, total, "Replies retrieved");
+});
