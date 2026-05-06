@@ -27,3 +27,8 @@ export const updateExam = asyncHandler(async (req, res) => {
     const exam = await examService.updateExam(examId, updateData, req.user);
     ApiResponse.success(res, { exam }, "Exam updated successfully");
 });
+export const addBlockToExam = asyncHandler(async (req, res) => {
+    const { examId, sectionIndex, block } = req.body;
+    const exam = await examService.addBlockToExam(examId, sectionIndex, block, req.user);
+    ApiResponse.success(res, { exam }, "Block added to exam successfully");
+});
