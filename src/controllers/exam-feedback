@@ -39,3 +39,8 @@ export const listReplies = asyncHandler(async (req, res) => {
     });
     ApiResponse.paginate(res, data, p, l, total, "Replies retrieved");
 });
+export const getRating = asyncHandler(async (req, res) => {
+    const { examId } = req.body;
+    const rating = await examFeedbackService.getRating(examId);
+    ApiResponse.success(res, rating);
+});
