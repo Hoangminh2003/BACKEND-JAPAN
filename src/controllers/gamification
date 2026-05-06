@@ -148,3 +148,15 @@ const [todayStats] = await ExamAttempt.aggregate([
         },
     });
 });
+export const updateStudyGoal = asyncHandler(async (req, res) => {
+    const { dailyQuestions, weeklyExams } = req.body;
+    let goal = await StudyGoal.findOne({ user: req.user.id });
+    if (!goal) {
+        goal = await StudyGoal.create({ user: req.user.id, dailyQuestions, weeklyExams });
+    } else {
+        if (dailyQuestions !== undefined) goal.dailyQuestions = dailyQuestions;
+        if (weeklyExams !== undefined) goal.weeklyExams = weeklyExams;
+        await goal.save();
+    }
+    ApiResponse.success(res, { goal }, "Study goal updated");
+});
