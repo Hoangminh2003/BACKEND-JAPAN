@@ -6,3 +6,7 @@ export const createBlocks = asyncHandler(async (req, res) => {
     const result = await questionBlockService.createBlocks(req.body.items, req.user.id);
     ApiResponse.created(res, result, "Question blocks created successfully");
 });
+export const getBlocks = asyncHandler(async (req, res) => {
+    const { data, total, page, limit } = await questionBlockService.getBlocks(req.body);
+    ApiResponse.paginate(res, data, page, limit, total, "Question blocks retrieved successfully");
+});
