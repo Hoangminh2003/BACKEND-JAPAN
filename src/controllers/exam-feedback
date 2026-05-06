@@ -52,3 +52,8 @@ export const remove = asyncHandler(async (req, res) => {
     );
     ApiResponse.success(res, result, "Feedback deleted");
 });
+export const updateStatus = asyncHandler(async (req, res) => {
+    const { feedbackId, status } = req.body;
+    const feedback = await examFeedbackService.updateStatus(feedbackId, status);
+    ApiResponse.success(res, { feedback }, "Status updated");
+});
