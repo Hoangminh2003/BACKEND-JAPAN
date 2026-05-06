@@ -19,3 +19,7 @@ export const updateQuestion = asyncHandler(async (req, res) => {
     const question = await questionBlockService.updateQuestion(questionId, updateData, req.user);
     ApiResponse.success(res, { question }, "Question updated successfully");
 });
+export const deleteQuestion = asyncHandler(async (req, res) => {
+    await questionBlockService.deleteQuestion(req.body.questionId, req.user);
+    ApiResponse.success(res, null, "Question deleted successfully");
+});
