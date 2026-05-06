@@ -59,3 +59,7 @@ export const deleteExam = asyncHandler(async (req, res) => {
     await examService.deleteExam(req.body.examId, req.user);
     ApiResponse.success(res, null, "Exam deleted successfully");
 });
+export const publishExam = asyncHandler(async (req, res) => {
+    const exam = await examService.publishExam(req.body.examId, req.user);
+    ApiResponse.success(res, { exam }, "Exam published successfully");
+});
