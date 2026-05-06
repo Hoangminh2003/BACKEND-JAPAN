@@ -19,3 +19,13 @@ export const updateBlock = asyncHandler(async (req, res) => {
     const block = await questionBlockService.updateBlock(blockId, updateData, req.user);
     ApiResponse.success(res, { block }, "Question block updated successfully");
 });
+export const updateFullBlock = asyncHandler(async (req, res) => {
+    const { blockId, questions, ...blockData } = req.body;
+    const block = await questionBlockService.updateFullBlock(
+        blockId,
+        blockData,
+        questions,
+        req.user,
+    );
+    ApiResponse.success(res, { block }, "Block and questions updated successfully");
+});
