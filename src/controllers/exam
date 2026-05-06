@@ -14,3 +14,7 @@ export const getExams = asyncHandler(async (req, res) => {
     });
     ApiResponse.paginate(res, data, page, limit, total, "Exams retrieved successfully");
 });
+export const getPublicExams = asyncHandler(async (req, res) => {
+    const { data, total, page, limit } = await examService.getPublicExams(req.body);
+    ApiResponse.paginate(res, data, page, limit, total, "Exams retrieved successfully");
+});
