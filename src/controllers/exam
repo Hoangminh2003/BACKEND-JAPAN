@@ -6,3 +6,11 @@ export const createExam = asyncHandler(async (req, res) => {
     const exam = await examService.createExam(req.body, req.user.id);
     ApiResponse.created(res, { exam }, "Exam created successfully");
 });
+export const getExams = asyncHandler(async (req, res) => {
+    const { data, total, page, limit } = await examService.getExams({
+        ...req.body,
+        userRole: req.user.role,
+        userId: req.user.id,
+    });
+    ApiResponse.paginate(res, data, page, limit, total, "Exams retrieved successfully");
+});
