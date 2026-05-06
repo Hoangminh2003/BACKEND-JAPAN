@@ -10,3 +10,7 @@ export const addQuestionsToBlock = asyncHandler(async (req, res) => {
     );
     ApiResponse.created(res, result, "Questions added to block successfully");
 });
+export const getQuestionById = asyncHandler(async (req, res) => {
+    const question = await questionBlockService.getQuestionById(req.body.questionId);
+    ApiResponse.success(res, { question });
+});
