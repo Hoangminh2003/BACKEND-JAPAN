@@ -44,3 +44,10 @@ export const getRating = asyncHandler(async (req, res) => {
     const rating = await examFeedbackService.getRating(examId);
     ApiResponse.success(res, rating);
 });
+    const result = await examFeedbackService.remove(
+        req.body.feedbackId,
+        req.user.id,
+        req.user.role,
+    );
+    ApiResponse.success(res, result, "Feedback deleted");
+});
