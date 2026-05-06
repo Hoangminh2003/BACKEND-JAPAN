@@ -1,0 +1,8 @@
+import { questionBlockService } from "../services/index.js";
+import ApiResponse from "../utils/api-response.js";
+import { asyncHandler } from "../utils/async-handler.js";
+
+export const createBlocks = asyncHandler(async (req, res) => {
+    const result = await questionBlockService.createBlocks(req.body.items, req.user.id);
+    ApiResponse.created(res, result, "Question blocks created successfully");
+});
