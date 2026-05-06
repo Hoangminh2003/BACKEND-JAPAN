@@ -14,3 +14,8 @@ export const getQuestionById = asyncHandler(async (req, res) => {
     const question = await questionBlockService.getQuestionById(req.body.questionId);
     ApiResponse.success(res, { question });
 });
+export const updateQuestion = asyncHandler(async (req, res) => {
+    const { questionId, ...updateData } = req.body;
+    const question = await questionBlockService.updateQuestion(questionId, updateData, req.user);
+    ApiResponse.success(res, { question }, "Question updated successfully");
+});
